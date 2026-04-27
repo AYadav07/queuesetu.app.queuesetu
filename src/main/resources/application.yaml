@@ -1,3 +1,25 @@
 spring:
   application:
     name: queuesetu
+  autoconfigure:
+    exclude: com.queuesetu.boot.core.security.SecurityConfig
+
+server:
+  port: 8080
+
+jwt:
+  secret: o1b8X2Q9fN3uV7jKp4ZxHq2rYt6W0s9vABcDeFgHiJk=
+
+application:
+  security:
+    jwt:
+      refresh-token:
+        expiration: 1000000
+
+services:
+  user:
+    base-url: http://localhost:8085
+  account:
+    base-url: http://localhost:8086
+  queue:
+    base-url: http://localhost:8087

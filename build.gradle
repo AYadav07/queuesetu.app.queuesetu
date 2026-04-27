@@ -15,11 +15,21 @@ java {
 }
 
 repositories {
+	mavenLocal()
 	mavenCentral()
 }
 
 dependencies {
+	implementation 'com.queuesetu:boot-core:0.0.1-SNAPSHOT'
+	implementation "com.queuesetu:user-client:1.2.0"
+	implementation "com.queuesetu:account-client:1.0.0"
+	implementation "queuesetu.ms:booking-client:1.0.0"
+	implementation "queuesetu.ms:queue-client:1.0.0"
 	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
