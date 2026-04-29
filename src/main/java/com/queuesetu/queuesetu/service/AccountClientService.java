@@ -5,6 +5,8 @@ import com.queuesetu.account.dto.BranchRequest;
 import com.queuesetu.account.dto.Tenant;
 import com.queuesetu.account.dto.TenantRequest;
 import com.queuesetu.boot.core.restclient.factory.RestClientFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ import java.util.List;
 
 @Service
 public class AccountClientService {
+
+    private static final Logger log = LoggerFactory.getLogger(AccountClientService.class);
 
     private final RestClientFactory restClientFactory;
     private final String accountServiceBaseUrl;
@@ -26,6 +30,7 @@ public class AccountClientService {
     // ── Tenant operations ─────────────────────────────────────────────────────
 
     public List<Tenant> getMyTenants(String authHeader) {
+        log.info("[BFF] Fetching tenants from account service");
         Tenant[] arr = restClientFactory.connect(accountServiceBaseUrl)
                 .header("Authorization", authHeader)
                 .get("/api/tenant/my-tenants", Tenant[].class)
@@ -34,6 +39,7 @@ public class AccountClientService {
     }
 
     public Tenant createTenant(TenantRequest request, String authHeader) {
+        log.info("[BFF] Creating tenant '{}'", request.getTenantName());
         return restClientFactory.connect(accountServiceBaseUrl)
                 .header("Authorization", authHeader)
                 .post("/api/tenant/add", request, Tenant.class)
@@ -41,6 +47,7 @@ public class AccountClientService {
     }
 
     public Tenant getTenant(String tenantId, String authHeader) {
+        log.info("[BFF] Fetching tenant {}", tenantId);
         return restClientFactory.connect(accountServiceBaseUrl)
                 .header("Authorization", authHeader)
                 .get("/api/tenant/" + tenantId, Tenant.class)

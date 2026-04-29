@@ -3,6 +3,8 @@ package com.queuesetu.queuesetu.service;
 import com.queuesetu.boot.core.restclient.factory.RestClientFactory;
 import com.queuesetu.queuesetu.dto.QueueDto;
 import com.queuesetu.queuesetu.dto.QueueRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,8 @@ import java.util.List;
 
 @Service
 public class QueueClientService {
+
+    private static final Logger log = LoggerFactory.getLogger(QueueClientService.class);
 
     private final RestClientFactory restClientFactory;
     private final String queueServiceBaseUrl;
@@ -22,6 +26,7 @@ public class QueueClientService {
     }
 
     public QueueDto createQueue(QueueRequest request, String authHeader) {
+        log.info("[BFF] Creating queue '{}' for branch {}", request.getName(), request.getBranchId());
         return restClientFactory.connect(queueServiceBaseUrl)
                 .header("Authorization", authHeader)
                 .post("/api/queues", request, QueueDto.class)

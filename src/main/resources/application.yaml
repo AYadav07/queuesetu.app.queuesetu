@@ -25,3 +25,10 @@ services:
     base-url: http://localhost:8087
   booking:
     base-url: http://localhost:8089
+
+logging:
+  level:
+    root: INFO
+    com.queuesetu: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

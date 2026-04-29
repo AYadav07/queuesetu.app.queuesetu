@@ -6,11 +6,15 @@ import com.queuesetu.user.dto.LoginResponse;
 import com.queuesetu.user.dto.TokenRefreshRequest;
 import com.queuesetu.user.dto.TokenRefreshResponse;
 import com.queuesetu.user.dto.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserClientService {
+
+    private static final Logger log = LoggerFactory.getLogger(UserClientService.class);
 
     private final RestClientFactory restClientFactory;
     private final String userServiceBaseUrl;
@@ -22,12 +26,14 @@ public class UserClientService {
     }
 
     public User signUp(User request) {
+        log.info("[BFF] Signing up user: {}", request.getEmail());
         return restClientFactory.connect(userServiceBaseUrl)
                 .post("/api/auth/sign-up", request, User.class)
                 .toEntity();
     }
 
     public LoginResponse login(LoginRequest request) {
+        log.info("[BFF] Login request for: {}", request.getEmail());
         return restClientFactory.connect(userServiceBaseUrl)
                 .post("/api/auth/login", request, LoginResponse.class)
                 .toEntity();
