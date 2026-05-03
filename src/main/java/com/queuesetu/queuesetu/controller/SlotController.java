@@ -29,6 +29,16 @@ public class SlotController {
         return ResponseEntity.ok(bookingClientService.getSlotsByService(serviceId, authHeader));
     }
 
+    @GetMapping("/{slotId}")
+    @Operation(summary = "Get a slot by ID")
+    public ResponseEntity<ServiceSlot> getSlot(@PathVariable String slotId,
+                                               HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        ServiceSlot slot = bookingClientService.getSlot(slotId, authHeader);
+        if (slot == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(slot);
+    }
+
     @PostMapping
     @Operation(summary = "Create a slot for a service")
     public ResponseEntity<ServiceSlot> createSlot(@RequestBody CreateServiceSlotRequest body,

@@ -73,6 +73,13 @@ public class BookingClientService {
         return arr != null ? Arrays.asList(arr) : List.of();
     }
 
+    public ServiceSlot getSlot(String slotId, String authHeader) {
+        return restClientFactory.connect(bookingServiceBaseUrl)
+                .header("Authorization", authHeader)
+                .get("/api/slots/" + slotId, ServiceSlot.class)
+                .toEntity();
+    }
+
     public ServiceSlot createSlot(CreateServiceSlotRequest request, String authHeader) {
         return restClientFactory.connect(bookingServiceBaseUrl)
                 .header("Authorization", authHeader)

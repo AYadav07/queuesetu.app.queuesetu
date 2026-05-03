@@ -62,4 +62,12 @@ public class QueueController {
         String authHeader = request.getHeader("Authorization");
         return ResponseEntity.ok(queueClientService.getQueuesByTenant(tenantId, authHeader));
     }
+
+    @GetMapping("/slot/{slotId}")
+    @Operation(summary = "List queues for a slot")
+    public ResponseEntity<List<QueueDto>> getQueuesBySlot(@PathVariable String slotId,
+                                                          HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        return ResponseEntity.ok(queueClientService.getQueuesBySlot(slotId, authHeader));
+    }
 }
