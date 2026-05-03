@@ -1,5 +1,6 @@
 package com.queuesetu.queuesetu.controller;
 
+import com.queuesetu.queuesetu.dto.QueueDetailDto;
 import com.queuesetu.queuesetu.dto.QueueDto;
 import com.queuesetu.queuesetu.dto.QueueRequest;
 import com.queuesetu.queuesetu.service.QueueClientService;
@@ -36,6 +37,16 @@ public class QueueController {
         QueueDto queue = queueClientService.getQueue(queueId, authHeader);
         if (queue == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(queue);
+    }
+
+    @GetMapping("/{queueId}/detail")
+    @Operation(summary = "Get full queue detail with live stats")
+    public ResponseEntity<QueueDetailDto> getQueueDetail(@PathVariable String queueId,
+                                                          HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        QueueDetailDto detail = queueClientService.getQueueDetail(queueId, authHeader);
+        if (detail == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(detail);
     }
 
     @DeleteMapping("/{queueId}")

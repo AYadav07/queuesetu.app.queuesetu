@@ -1,6 +1,7 @@
 package com.queuesetu.queuesetu.service;
 
 import com.queuesetu.boot.core.restclient.factory.RestClientFactory;
+import com.queuesetu.queuesetu.dto.QueueDetailDto;
 import com.queuesetu.queuesetu.dto.QueueDto;
 import com.queuesetu.queuesetu.dto.QueueRequest;
 import org.slf4j.Logger;
@@ -37,6 +38,13 @@ public class QueueClientService {
         return restClientFactory.connect(queueServiceBaseUrl)
                 .header("Authorization", authHeader)
                 .get("/api/queues/" + queueId, QueueDto.class)
+                .toEntity();
+    }
+
+    public QueueDetailDto getQueueDetail(String queueId, String authHeader) {
+        return restClientFactory.connect(queueServiceBaseUrl)
+                .header("Authorization", authHeader)
+                .get("/api/queues/" + queueId + "/detail", QueueDetailDto.class)
                 .toEntity();
     }
 
