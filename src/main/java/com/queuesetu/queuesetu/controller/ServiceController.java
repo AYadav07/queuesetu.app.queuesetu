@@ -29,6 +29,14 @@ public class ServiceController {
         return ResponseEntity.ok(bookingClientService.getServicesByBranch(branchId, authHeader));
     }
 
+    @GetMapping("/{branchId}/services")
+    @Operation(summary = "List of services for a branch")
+    public ResponseEntity<List<ServiceDefinition>> getBranches(@PathVariable String branchId,
+                                                    HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        return ResponseEntity.ok(bookingClientService.getServicesByBranch(branchId, authHeader));
+    }
+
     @GetMapping("/{serviceId}")
     @Operation(summary = "Get service by ID")
     public ResponseEntity<ServiceDefinition> getService(@PathVariable String serviceId,
