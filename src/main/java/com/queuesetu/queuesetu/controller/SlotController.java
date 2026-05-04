@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import queuesetu.ms.booking.dto.CreateServiceSlotRequest;
 import queuesetu.ms.booking.dto.ServiceSlot;
@@ -41,6 +42,7 @@ public class SlotController {
 
     @PostMapping
     @Operation(summary = "Create a slot for a service")
+    @PreAuthorize("@rbac.isSlotManageable(authentication, #body.serviceId?.toString(), #body.branchId?.toString(), null)")
     public ResponseEntity<ServiceSlot> createSlot(@RequestBody CreateServiceSlotRequest body,
                                                   HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
@@ -49,6 +51,8 @@ public class SlotController {
 
     @PutMapping("/{slotId}")
     @Operation(summary = "Update a slot by ID")
+    // slotId only — degrades to SA||any-TA||any-BA||any-SM. MS re-validates with full scope.
+    @PreAuthorize("@rbac.isSlotManageable(authentication, null, null, null)")
     public ResponseEntity<ServiceSlot> updateSlot(@PathVariable String slotId,
                                                   @RequestBody UpdateServiceSlotRequest body,
                                                   HttpServletRequest request) {
@@ -58,6 +62,8 @@ public class SlotController {
 
     @DeleteMapping("/{slotId}")
     @Operation(summary = "Delete a slot by ID")
+    // slotId only — degrades to SA||any-TA||any-BA||any-SM. MS re-validates with full scope.
+    @PreAuthorize("@rbac.isSlotManageable(authentication, null, null, null)")
     public ResponseEntity<Void> deleteSlot(@PathVariable String slotId,
                                            HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");

@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class BranchController {
 
     @PostMapping
     @Operation(summary = "Create a new branch")
+    @PreAuthorize("@rbac.isTenantAdmin(authentication, #body.tenantId)")
     public ResponseEntity<Branch> createBranch(@Valid @RequestBody BranchRequest body,
                                                HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
@@ -39,6 +41,7 @@ public class BranchController {
 
     @PutMapping("/{branchId}")
     @Operation(summary = "Update branch by ID")
+    @PreAuthorize("@rbac.isBranchManageable(authentication, #branchId, #body.tenantId)")
     public ResponseEntity<Branch> updateBranch(@PathVariable String branchId,
                                                @Valid @RequestBody BranchRequest body,
                                                HttpServletRequest request) {
@@ -48,6 +51,9 @@ public class BranchController {
 
     @DeleteMapping("/{branchId}")
     @Operation(summary = "Delete branch by ID")
+    // branchId is available; tenantId is not — degrades to SA||BA(branchId)||any-TA check.
+    // The account MS re-validates with full scope after fetching the branch record.
+    @PreAuthorize("@rbac.isBranchManageable(authentication, #branchId, null)")
     public ResponseEntity<String> deleteBranch(@PathVariable String branchId,
                                                HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");

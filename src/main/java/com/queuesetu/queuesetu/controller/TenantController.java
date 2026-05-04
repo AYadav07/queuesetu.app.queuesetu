@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,6 +48,7 @@ public class TenantController {
 
     @PutMapping("/{tenantId}")
     @Operation(summary = "Update tenant by ID")
+    @PreAuthorize("@rbac.isTenantAdmin(authentication, #tenantId)")
     public ResponseEntity<Tenant> updateTenant(@PathVariable String tenantId,
                                                @Valid @RequestBody TenantRequest body,
                                                HttpServletRequest request) {
@@ -56,6 +58,7 @@ public class TenantController {
 
     @DeleteMapping("/{tenantId}")
     @Operation(summary = "Delete tenant by ID")
+    @PreAuthorize("@rbac.isTenantAdmin(authentication, #tenantId)")
     public ResponseEntity<String> deleteTenant(@PathVariable String tenantId,
                                                HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");

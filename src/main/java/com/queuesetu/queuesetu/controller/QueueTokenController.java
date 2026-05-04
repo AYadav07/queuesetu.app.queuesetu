@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -58,6 +59,8 @@ public class QueueTokenController {
      */
     @PostMapping("/{queueId}/callNext")
     @Operation(summary = "Call the next token (staff/admin)")
+    // SA || any-TA || any-BA || any-SM || ST(queueId). MS enforces full-scope check.
+    @PreAuthorize("@rbac.canOperateQueue(authentication, #queueId)")
     public ResponseEntity<QueueTokenDto> callNext(
             @PathVariable String queueId,
             HttpServletRequest request) {
@@ -73,6 +76,8 @@ public class QueueTokenController {
      */
     @PostMapping("/{queueId}/tokens/{tokenId}/complete")
     @Operation(summary = "Mark a token as completed (staff/admin)")
+    // SA || any-TA || any-BA || any-SM || ST(queueId). MS enforces full-scope check.
+    @PreAuthorize("@rbac.canOperateQueue(authentication, #queueId)")
     public ResponseEntity<QueueTokenDto> markCompleted(
             @PathVariable String queueId,
             @PathVariable String tokenId,

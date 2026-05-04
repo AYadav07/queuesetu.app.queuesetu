@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import queuesetu.ms.booking.dto.CreateServiceDefinitionRequest;
 import queuesetu.ms.booking.dto.ServiceDefinition;
@@ -49,6 +50,7 @@ public class ServiceController {
 
     @PostMapping
     @Operation(summary = "Create a service in a branch")
+    @PreAuthorize("@rbac.isBranchManageable(authentication, #body.branchId?.toString(), #body.tenantId?.toString())")
     public ResponseEntity<ServiceDefinition> createService(@RequestBody CreateServiceDefinitionRequest body,
                                                            HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
@@ -57,6 +59,8 @@ public class ServiceController {
 
     @PutMapping("/{serviceId}")
     @Operation(summary = "Update a service by ID")
+    // serviceId only — degrades to SA||any-TA||any-BA. MS re-validates with full scope.
+    @PreAuthorize("@rbac.hasManagementRole(authentication)")
     public ResponseEntity<ServiceDefinition> updateService(@PathVariable String serviceId,
                                                            @RequestBody UpdateServiceDefinitionRequest body,
                                                            HttpServletRequest request) {
@@ -66,6 +70,8 @@ public class ServiceController {
 
     @DeleteMapping("/{serviceId}")
     @Operation(summary = "Delete a service by ID")
+    // serviceId only — degrades to SA||any-TA||any-BA. MS re-validates with full scope.
+    @PreAuthorize("@rbac.hasManagementRole(authentication)")
     public ResponseEntity<Void> deleteService(@PathVariable String serviceId,
                                               HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");

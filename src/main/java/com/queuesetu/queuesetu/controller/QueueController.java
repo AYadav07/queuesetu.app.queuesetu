@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class QueueController {
 
     @PostMapping
     @Operation(summary = "Create a new queue")
+    @PreAuthorize("@rbac.isSlotManageable(authentication, #body.serviceId?.toString(), #body.branchId?.toString(), #body.tenantId?.toString())")
     public ResponseEntity<QueueDto> createQueue(@RequestBody QueueRequest body,
                                                 HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
@@ -51,6 +53,8 @@ public class QueueController {
 
     @DeleteMapping("/{queueId}")
     @Operation(summary = "Delete queue by ID")
+    // queueId only — degrades to SA||any-TA||any-BA||any-SM. Queue MS re-validates with full scope.
+    @PreAuthorize("@rbac.isSlotManageable(authentication, null, null, null)")
     public ResponseEntity<Void> deleteQueue(@PathVariable String queueId,
                                             HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
