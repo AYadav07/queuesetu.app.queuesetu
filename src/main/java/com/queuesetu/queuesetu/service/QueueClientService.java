@@ -79,4 +79,13 @@ public class QueueClientService {
                 .toEntity();
         return arr != null ? Arrays.asList(arr) : List.of();
     }
+
+    public List<QueueDto> getAllQueues(String authHeader) {
+        log.info("[BFF] Fetching all queues");
+        QueueDto[] arr = restClientFactory.connect(queueServiceBaseUrl)
+                .header("Authorization", authHeader)
+                .get("/api/queues", QueueDto[].class)
+                .toEntity();
+        return arr != null ? Arrays.asList(arr) : List.of();
+    }
 }
